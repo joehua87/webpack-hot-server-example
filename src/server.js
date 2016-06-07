@@ -1,11 +1,21 @@
 import express from "express";
+import path from 'path';
+import webpack from 'webpack';
+import webpackDevMiddleware from "webpack-dev-middleware";
+import webpackHotMiddleware from "webpack-hot-middleware";
+import config from './../webpack.config.client.js';
+
+const app = express();
+const compiler = webpack(config);
+
+console.log(compiler);
 
 function getApp() {
   return require("./app").default;
 }
 
 if (module.hot) {
-  module.hot.accept("./app", function() {
+  module.hot.accept("./app", function () {
     console.log("🔁  HMR Reloading `./app`...");
   });
 
@@ -16,7 +26,12 @@ if (module.hot) {
 
 export default express()
   .use((req, res) => getApp().handle(req, res))
-  .listen(3000, function(err) {
+  .use(webpackDevMiddleware(compiler, {
+    noInfo: true,
+    publicPath: config.output.publicPath
+  }))
+  .use(webpackHotMiddleware(compiler))
+  .listen(3000, function (err) {
     if (err) {
       console.error(err);
       return;

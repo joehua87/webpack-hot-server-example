@@ -1,5 +1,6 @@
 import express from "express";
 import React from 'react';
+import { AppContainer } from 'react-hot-loader';
 import { renderToString } from 'react-dom/server';
 
 export default express.Router()
@@ -12,7 +13,11 @@ export default express.Router()
       )
     };
 
-    const html = renderToString(<Root />)
+    const html = renderToString(
+      <AppContainer>
+        <Root />
+      </AppContainer>
+    )
 
     res.send(`
       <!doctype html>
