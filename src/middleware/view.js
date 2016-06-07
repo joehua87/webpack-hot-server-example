@@ -1,7 +1,19 @@
 import express from "express";
+import React from 'react';
+import { renderToString } from 'react-dom/server';
 
 export default express.Router()
   .get("/", (req, res) => {
+    function Root() {
+      return (
+        <div>
+          Hello from React
+        </div>
+      )
+    };
+
+    const html = renderToString(<Root />)
+
     res.send(`
       <!doctype html>
       <html>
@@ -15,6 +27,7 @@ export default express.Router()
           <title>Webpack Hot Server Example</title>
         </head>
         <body>
+          <div>${html}</div>
           <div id="app">
             Waiting for <code>/api</code>&hellip;
           </div>
